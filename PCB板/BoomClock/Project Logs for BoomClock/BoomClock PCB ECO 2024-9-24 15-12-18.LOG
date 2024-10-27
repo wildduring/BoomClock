@@ -1,0 +1,6 @@
+Added Pin To Net: NetName=GND Pin=P1-1
+Added Pin To Net: NetName=Boom Pin=RP1-9
+Added Pin To Net: NetName=Boom Pin=U1-8
+Added Pin To Net: NetName=Alarm1 Pin=U1-12
+Added Pin To Net: NetName=Alarm2 Pin=U1-13
+Added Member To Class: ClassName=BoomClock Member=Component P1 MHDR1X3

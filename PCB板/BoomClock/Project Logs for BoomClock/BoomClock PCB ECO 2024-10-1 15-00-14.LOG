@@ -1,0 +1,3 @@
+Added Pin To Net: NetName=NetU3_3 Pin=X2-1
+Added Pin To Net: NetName=NetU3_2 Pin=X2-2
+Added Member To Class: ClassName=BoomClock Member=Component X2 32.768

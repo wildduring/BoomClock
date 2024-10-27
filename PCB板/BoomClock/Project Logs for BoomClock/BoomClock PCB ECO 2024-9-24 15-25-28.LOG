@@ -1,0 +1,4 @@
+Added Pin To Net: NetName=GND Pin=P1-1
+Added Pin To Net: NetName=Signal2 Pin=P1-2
+Added Pin To Net: NetName=Signal1 Pin=P1-3
+Added Member To Class: ClassName=BoomClock Member=Component P1 Header 3H

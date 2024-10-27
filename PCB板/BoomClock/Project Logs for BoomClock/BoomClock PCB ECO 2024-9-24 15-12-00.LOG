@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=Boom Pin=RP1-7
+Removed Pin From Net: NetName=Alarm1 Pin=U1-6
+Removed Pin From Net: NetName=Alarm2 Pin=U1-7
+Removed Pin From Net: NetName=Boom Pin=U1-12
+Added Component: Designator=P1(MHDR1X3)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=Signal1 Pin=P1-3
+Added Pin To Net: NetName=Signal1 Pin=RP1-7
+Added Pin To Net: NetName=Signal1 Pin=U1-6
+Added Net: Name=Signal1
+Added Pin To Net: NetName=Signal2 Pin=P1-2
+Added Pin To Net: NetName=Signal2 Pin=RP1-8
+Added Pin To Net: NetName=Signal2 Pin=U1-7
+Added Net: Name=Signal2

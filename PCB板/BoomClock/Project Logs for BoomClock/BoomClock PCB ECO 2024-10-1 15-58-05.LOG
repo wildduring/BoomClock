@@ -1,0 +1,6 @@
+Added Pin To Net: NetName=Alarm1 Pin=D1-A
+Added Pin To Net: NetName=NetD1_K Pin=D1-K
+Added Pin To Net: NetName=Alarm2 Pin=D2-A
+Added Pin To Net: NetName=NetD2_K Pin=D2-K
+Added Member To Class: ClassName=BoomClock Member=Component D1 LED
+Added Member To Class: ClassName=BoomClock Member=Component D2 LED

@@ -1,0 +1,821 @@
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE BOOMCLOCK
+OBJECT MODULE PLACED IN .\Objects\BoomClock.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE BoomClock.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXT
+                    -END PRINT(.\Listings\BoomClock.lst) TABS(2) OBJECT(.\Objects\BoomClock.obj)
+
+line level    source
+
+   1          #ifndef _BoomClock_c_
+   2          #define _BoomClock_c_
+   3          
+   4          #include "BoomClock.h"
+   5          
+   6          #include "lib/digital/digital.h"
+   7          #include "lib/ds1302/ds1302.h"
+   8          
+   9          #define BrightnessHigh 40
+  10          #define BrightnessLow 1
+  11          
+  12          unsigned char Brightness = BrightnessHigh;
+  13          unsigned char flashCount = 0;
+  14          bit flashFlag = 1;
+  15          bit enAlarm1 = 0;
+  16          bit enAlarm2 = 0;
+  17          unsigned char Alarm1Time[7] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  18          unsigned char Alarm2Time[7] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  19          
+  20          void InitBoomClock(void)
+  21          {
+  22   1        ds1302Init();
+  23   1        Timer0_Init();
+  24   1      }
+  25          
+  26          void Delay50us(void)  //—” ±100us@11.0592MHz
+  27          {
+  28   1        unsigned char data i;
+  29   1      
+  30   1        _nop_();
+  31   1        i = 20;
+  32   1        while (--i);
+  33   1      }
+  34          
+  35          void BrightnessCtrl(unsigned char val)
+  36          {
+  37   1        while(val>0)
+  38   1        {
+  39   2          Delay50us();
+  40   2          val -= 1;
+  41   2        }
+  42   1      }
+  43          
+  44          void DisplayRealTime(void)
+  45          {
+  46   1        ds1302ReadTime();
+  47   1        DisplayTime(TIME, 1);
+  48   1      }
+  49          
+  50          void DisplayTime(unsigned char* date, bit isFlash)    //œ‘ æ ±º‰
+  51          {
+  52   1        display(1, date[2]/16);
+  53   1        BrightnessCtrl(Brightness);
+  54   1        if(isFlash && date[0]%2) display(2, date[2]%0x10+10);
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 2   
+
+  55   1        else display(2, date[2]&0x0f);
+  56   1        BrightnessCtrl(Brightness);
+  57   1        display(3, date[1]/16);
+  58   1        BrightnessCtrl(Brightness);
+  59   1        display(4, date[1]&0x0f);
+  60   1        BrightnessCtrl(Brightness);
+  61   1        display(5, TIME[4]/16);
+  62   1        BrightnessCtrl(Brightness);
+  63   1        display(6, TIME[4]&0x0f);
+  64   1        BrightnessCtrl(Brightness);
+  65   1        display(7, TIME[3]/16);
+  66   1        BrightnessCtrl(Brightness);
+  67   1        display(8, TIME[3]&0x0f);
+  68   1        BrightnessCtrl(Brightness);
+  69   1        display(9, 0);    // ˝¬Îπ‹≤¢√ª”–µ⁄9∂Œ£¨¥À¥¶∑¿÷πµ⁄∞À∂Œœ‘ æ ±º‰π˝≥§£¨¡¡∂»◊Ó¡¡£¨“ÚŒ™ds1302ReadTimeœ‡µ±”⁄“ª∏ˆ
+             -¥Û—” ±
+  70   1        if(Brightness == BrightnessLow) BrightnessCtrl(500);
+  71   1      }
+  72          
+  73          void ScanKeys(void)    //∞¥º¸…®√Ë
+  74          {
+  75   1        unsigned char i;
+  76   1        if(Alarm1Key == 0)
+  77   1        {
+  78   2          DisplayRealTime();    //œ˚∂∂—” ±
+  79   2          if(Alarm1Key == 0)
+  80   2          {
+  81   3            for(i=0; i<10; i++) DisplayRealTime();
+  82   3            if(Alarm1Key == 1)    //∂Ã∞¥
+  83   3            {
+  84   4              reverseAlarm1();
+  85   4            }
+  86   3            else    //≥§∞¥
+  87   3            {
+  88   4              for(i=0; i<30; i++) DisplayRealTime();
+  89   4              if(Alarm1Key == 0)    //≥§∞¥
+  90   4              {
+  91   5                while(Alarm1Key == 0)   //µ»À˚À…ø™
+  92   5                {
+  93   6                  //////////////////’‚∏ˆ ±∫Úœ»…¡◊≈£¨»Áπ˚À˚∏“≤ªÀ… ÷æÕ≤Ÿ◊˜ƒ«≤ª¿ÌÀ˚//////////////////////////
+  94   6                  TR0 = 1;
+  95   6                  if(flashFlag)
+  96   6                  {
+  97   7                    DisplayTime(Alarm1Time, 0);
+  98   7                  }
+  99   6                  else 
+ 100   6                  {
+ 101   7                    for(i=1; i<5; i++) display(i, 20);
+ 102   7                      display(5, TIME[4]/16);
+ 103   7                      BrightnessCtrl(Brightness);
+ 104   7                      display(6, TIME[4]&0x0f);
+ 105   7                      BrightnessCtrl(Brightness);
+ 106   7                      display(7, TIME[3]/16);
+ 107   7                      BrightnessCtrl(Brightness);
+ 108   7                      display(8, TIME[3]&0x0f);
+ 109   7                      BrightnessCtrl(Brightness);
+ 110   7                      display(9, 0);    // ˝¬Îπ‹≤¢√ª”–µ⁄9∂Œ£¨¥À¥¶∑¿÷πµ⁄∞À∂Œœ‘ æ ±º‰π˝≥§£¨¡¡∂»◊Ó¡¡£¨“ÚŒ™ds1302ReadTimeœ‡µ
+             -±”⁄“ª∏ˆ¥Û—” ±
+ 111   7                  }
+ 112   6                }
+ 113   5                setAlarm1();
+ 114   5              }
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 3   
+
+ 115   4              else if(Alarm1Key == 1)    //∂Ã∞¥
+ 116   4              {
+ 117   5                reverseAlarm1();
+ 118   5              }
+ 119   4            }
+ 120   3          }
+ 121   2        }
+ 122   1        if(Alarm2Key == 0)
+ 123   1        {
+ 124   2          DisplayRealTime();    //œ˚∂∂—” ±
+ 125   2          if(Alarm2Key == 0)
+ 126   2          {
+ 127   3            for(i=0; i<10; i++) DisplayRealTime();
+ 128   3            if(Alarm2Key == 1)    //∂Ã∞¥
+ 129   3            {
+ 130   4              reverseAlarm2();
+ 131   4            }
+ 132   3            else    //≥§∞¥
+ 133   3            {
+ 134   4              for(i=0; i<30; i++) DisplayRealTime();
+ 135   4              if(Alarm2Key == 0)    //≥§∞¥
+ 136   4              {
+ 137   5                while(Alarm2Key == 0)   //µ»À˚À…ø™
+ 138   5                {
+ 139   6                  //////////////////’‚∏ˆ ±∫Úœ»…¡◊≈£¨»Áπ˚À˚∏“≤ªÀ… ÷æÕ≤Ÿ◊˜ƒ«≤ª¿ÌÀ˚//////////////////////////
+ 140   6                  TR0 = 1;
+ 141   6                  if(flashFlag)
+ 142   6                  {
+ 143   7                    DisplayTime(Alarm2Time, 0);
+ 144   7                  }
+ 145   6                  else 
+ 146   6                  {
+ 147   7                    for(i=1; i<5; i++) display(i, 20);
+ 148   7                      display(5, TIME[4]/16);
+ 149   7                      BrightnessCtrl(Brightness);
+ 150   7                      display(6, TIME[4]&0x0f);
+ 151   7                      BrightnessCtrl(Brightness);
+ 152   7                      display(7, TIME[3]/16);
+ 153   7                      BrightnessCtrl(Brightness);
+ 154   7                      display(8, TIME[3]&0x0f);
+ 155   7                      BrightnessCtrl(Brightness);
+ 156   7                      display(9, 0);    // ˝¬Îπ‹≤¢√ª”–µ⁄9∂Œ£¨¥À¥¶∑¿÷πµ⁄∞À∂Œœ‘ æ ±º‰π˝≥§£¨¡¡∂»◊Ó¡¡£¨“ÚŒ™ds1302ReadTimeœ‡µ
+             -±”⁄“ª∏ˆ¥Û—” ±
+ 157   7                  }
+ 158   6                }
+ 159   5                setAlarm2();
+ 160   5              }
+ 161   4              else if(Alarm2Key == 1)    //∂Ã∞¥
+ 162   4              {
+ 163   5                reverseAlarm2();
+ 164   5              }
+ 165   4            }
+ 166   3          }
+ 167   2        }
+ 168   1        if(SetKey == 0)
+ 169   1        {
+ 170   2          DisplayRealTime();    //œ˚∂∂—” ±
+ 171   2          if(SetKey == 0)
+ 172   2          {
+ 173   3            for(i=0; i<10; i++) DisplayRealTime();
+ 174   3            if(SetKey == 1)   //∂Ã∞¥
+ 175   3            {
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 4   
+
+ 176   4              showYear();
+ 177   4            }
+ 178   3            else    //≥§∞¥
+ 179   3            {
+ 180   4              for(i=0; i<50; i++) DisplayRealTime();
+ 181   4              if(SetKey == 0)
+ 182   4              {
+ 183   5                while(SetKey == 0)    //µ»À˚À…ø™
+ 184   5                {
+ 185   6                  //////////////////’‚∏ˆ ±∫Úœ»…¡◊≈£¨»Áπ˚À˚∏“≤ªÀ… ÷æÕ≤Ÿ◊˜ƒ«≤ª¿ÌÀ˚//////////////////////////
+ 186   6                  TR0 = 1;
+ 187   6                  if(flashFlag) DisplayTime(TIME, 0);
+ 188   6                  else for(i=1; i<10; i++) display(i, 20);
+ 189   6                }
+ 190   5                setTime();
+ 191   5              }
+ 192   4            }
+ 193   3          }
+ 194   2          else if(SetKey == 1)    //∂Ã∞¥
+ 195   2          {
+ 196   3            showYear();
+ 197   3          }
+ 198   2        }
+ 199   1        if(BoomKey == 0)
+ 200   1        {
+ 201   2          DisplayRealTime();    //œ˚∂∂—” ±
+ 202   2          if(BoomKey == 0)
+ 203   2          {
+ 204   3            for(i=0; i<10; i++) DisplayRealTime();
+ 205   3            if(BoomKey == 1)    //∂Ã∞¥
+ 206   3            {
+ 207   4              Boom();
+ 208   4            }
+ 209   3            else    //≥§∞¥
+ 210   3            {
+ 211   4              for(i=0; i<50; i++) DisplayRealTime();
+ 212   4              if(BoomKey == 0)
+ 213   4              {
+ 214   5                setBrightness();
+ 215   5                while(BoomKey == 0) DisplayRealTime();
+ 216   5              }
+ 217   4            }
+ 218   3          }
+ 219   2          else if(BoomKey == 1)    //∂Ã∞¥
+ 220   2          {
+ 221   3            Boom();
+ 222   3          }
+ 223   2        }
+ 224   1        TR0 = 0;          //πÿ∂® ±∆˜
+ 225   1        TL0 = 0xCD;       //…Ë÷√∂® ±≥ı º÷µ
+ 226   1        TH0 = 0xD4;       //…Ë÷√∂® ±≥ı º÷µ
+ 227   1        for(i=0; i<10; i++) DisplayRealTime();    //∞¥∫Û“≤œ˚∂∂
+ 228   1      }
+ 229          
+ 230          void reverseAlarm1(void)  //∑¥◊™ƒ÷÷”1ø™πÿ
+ 231          {
+ 232   1        unsigned char i, j;
+ 233   1        enAlarm1 = !enAlarm1;
+ 234   1        AlarmLED1 = enAlarm1;
+ 235   1        if(Brightness == BrightnessHigh) for(i=0; i<127; i++) displayFlashAlarm(0, Alarm1Time, 0);
+ 236   1        else for(i=0; i<255; i++) for(j=0; j<8; j++) displayFlashAlarm(0, Alarm1Time, 0);
+ 237   1      }
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 5   
+
+ 238          
+ 239          void reverseAlarm2(void)  //∑¥◊™ƒ÷÷”2ø™πÿ
+ 240          {
+ 241   1        unsigned char i, j;
+ 242   1        enAlarm2 = !enAlarm2;
+ 243   1        AlarmLED2 = enAlarm2;
+ 244   1        if(Brightness == BrightnessHigh) for(i=0; i<127; i++) displayFlashAlarm(0, Alarm2Time, 0);
+ 245   1        else for(i=0; i<255; i++) for(j=0; j<8; j++) displayFlashAlarm(0, Alarm2Time, 0);
+ 246   1      }
+ 247          
+ 248          void setBrightness(void)  //…Ë÷√¡¡∂»
+ 249          {
+ 250   1        if(Brightness > 10)
+ 251   1        {
+ 252   2          Brightness = BrightnessLow;
+ 253   2        }
+ 254   1        else if(Brightness < 10)
+ 255   1        {
+ 256   2          Brightness = BrightnessHigh;
+ 257   2        }
+ 258   1      }
+ 259          
+ 260          void Boom(void)         //–°≤ µ∞
+ 261          {
+ 262   1        unsigned char i, j, k, l;
+ 263   1        for(i=9; i>0; i--)
+ 264   1        {
+ 265   2          display(4, i);
+ 266   2          for(j=0; j<2; j++)
+ 267   2          {
+ 268   3            for(k=0; k<50; k++)
+ 269   3            {
+ 270   4              Beep = ! Beep;
+ 271   4              for(l=0; l<50; l++) 
+ 272   4              {
+ 273   5                Delay50us();
+ 274   5              }
+ 275   4            }
+ 276   3            for(k=0; k<100; k++)
+ 277   3            {
+ 278   4              Delay50us();
+ 279   4            }
+ 280   3          }
+ 281   2          for(j=0; j<200; j++)
+ 282   2          {
+ 283   3            for(k=0; k<50; k++)Delay50us();
+ 284   3          }
+ 285   2        }
+ 286   1      }
+ 287          
+ 288          void displayFlashAlarm(unsigned char select, unsigned char* date, bit isYear)    //”√’‚∏ˆ∫Ø ˝«∞º«µ√∞—∂® ±∆
+             -˜¥Úø™£¨”√ÕÍ‘Ÿπÿ…œ
+ 289          {
+ 290   1        if(!isYear)
+ 291   1        {
+ 292   2          if(select==1 && flashFlag) display(1, 20);
+ 293   2          else display(1, date[2]/16);
+ 294   2          BrightnessCtrl(Brightness);
+ 295   2          if(select==2 && flashFlag) display(2, 21);
+ 296   2          else display(2, date[2]%0x10+10);
+ 297   2          BrightnessCtrl(Brightness);
+ 298   2          if(select==3 && flashFlag) display(3, 20);
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 6   
+
+ 299   2          else display(3, date[1]/16);
+ 300   2          BrightnessCtrl(Brightness);
+ 301   2          if(select==4 && flashFlag) display(4, 20);
+ 302   2          else display(4, date[1]&0x0f);
+ 303   2          BrightnessCtrl(Brightness);
+ 304   2          if(select==5 && flashFlag) display(5, 20);
+ 305   2          else display(5, TIME[4]/16);
+ 306   2          BrightnessCtrl(Brightness);
+ 307   2          if(select==6 && flashFlag) display(6, 20);
+ 308   2          else display(6, TIME[4]&0x0f);
+ 309   2          BrightnessCtrl(Brightness);
+ 310   2          if(select==7 && flashFlag) display(7, 20);
+ 311   2          else display(7, TIME[3]/16);
+ 312   2          BrightnessCtrl(Brightness);
+ 313   2          if(select==8 && flashFlag) display(8, 20);
+ 314   2          else display(8, TIME[3]&0x0f);
+ 315   2          BrightnessCtrl(Brightness);
+ 316   2        }
+ 317   1        else
+ 318   1        {
+ 319   2          if(select==1 && flashFlag) display(1, 20);
+ 320   2          else display(1, 2);
+ 321   2          BrightnessCtrl(Brightness);
+ 322   2          if(select==2 && flashFlag) display(2, 20);
+ 323   2          else display(2, 0);
+ 324   2          BrightnessCtrl(Brightness);
+ 325   2          if(select==3 && flashFlag) display(3, 20);
+ 326   2          else display(3, TIME[6]/16);
+ 327   2          BrightnessCtrl(Brightness);
+ 328   2          if(select==4 && flashFlag) display(4, 20);
+ 329   2          else display(4, TIME[6]&0x0f);
+ 330   2          BrightnessCtrl(Brightness);
+ 331   2          if(select==5 && flashFlag) display(5, 20);
+ 332   2          else display(5, TIME[4]/16);
+ 333   2          BrightnessCtrl(Brightness);
+ 334   2          if(select==6 && flashFlag) display(6, 20);
+ 335   2          else display(6, TIME[4]&0x0f);
+ 336   2          BrightnessCtrl(Brightness);
+ 337   2          if(select==7 && flashFlag) display(7, 20);
+ 338   2          else display(7, TIME[3]/16);
+ 339   2          BrightnessCtrl(Brightness);
+ 340   2          if(select==8 && flashFlag) display(8, 20);
+ 341   2          else display(8, TIME[3]&0x0f);
+ 342   2          BrightnessCtrl(Brightness);
+ 343   2        }
+ 344   1      }
+ 345          
+ 346          void setAlarm1(void)      //…Ë÷√ƒ÷÷”1
+ 347          {
+ 348   1        unsigned char i;
+ 349   1        unsigned char select = 1;
+ 350   1        while(select<5)
+ 351   1        {
+ 352   2          displayFlashAlarm(select, Alarm1Time, 0);
+ 353   2          if(Alarm1Key ==0)
+ 354   2          {
+ 355   3            for(i=0; i<10; i++) displayFlashAlarm(select, Alarm1Time, 0);
+ 356   3            if(Alarm1Key ==0)
+ 357   3            {
+ 358   4              while(Alarm1Key ==0) displayFlashAlarm(select, Alarm1Time, 0);
+ 359   4              if(Alarm1Time[2]>0x23) Alarm1Time[2] = 0x20;
+ 360   4              select++;
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 7   
+
+ 361   4            }
+ 362   3          }
+ 363   2          if(UpKey == 0)
+ 364   2          {
+ 365   3            for(i=0; i<5; i++) displayFlashAlarm(select, Alarm1Time, 0);
+ 366   3            if(UpKey == 0)
+ 367   3            {
+ 368   4              while(UpKey ==0) displayFlashAlarm(select, Alarm1Time, 0);
+ 369   4              switch (select)
+ 370   4              {
+ 371   5                case 1:
+ 372   5                  if(Alarm1Time[2]/0x10 < 0x02) Alarm1Time[2] += 0x10;
+ 373   5                  else Alarm1Time[2] %= 0x10;
+ 374   5                  break;
+ 375   5                case 2:
+ 376   5                  if(Alarm1Time[2]%0x10 < 0x09) Alarm1Time[2] += 0x01;
+ 377   5                  else Alarm1Time[2] = Alarm1Time[2]/0x10*0x10;
+ 378   5                  if(Alarm1Time[2] > 0x23) Alarm1Time[2] = 0x20;
+ 379   5                  break;
+ 380   5                case 3:
+ 381   5                  if(Alarm1Time[1]/0x10 < 0x05) Alarm1Time[1] += 0x10;
+ 382   5                  else Alarm1Time[1] %= 0x10;
+ 383   5                  break;
+ 384   5                case 4:
+ 385   5                  if(Alarm1Time[1]%0x10 < 0x09) Alarm1Time[1] += 0x01;
+ 386   5                  else Alarm1Time[1] = Alarm1Time[1]/0x10*0x10;
+ 387   5                  break;
+ 388   5              }
+ 389   4            }
+ 390   3          }
+ 391   2          if(DownKey == 0)
+ 392   2          {
+ 393   3            for(i=0; i<5; i++) displayFlashAlarm(select, Alarm1Time, 0);
+ 394   3            if(DownKey == 0)
+ 395   3            {
+ 396   4              while(DownKey ==0) displayFlashAlarm(select, Alarm1Time, 0);
+ 397   4              switch (select)
+ 398   4              {
+ 399   5                case 1:
+ 400   5                  if(Alarm1Time[2]/0x10 == 0x00) Alarm1Time[2] += 0x20;
+ 401   5                  else Alarm1Time[2] -= 0x10;
+ 402   5                  break;
+ 403   5                case 2:
+ 404   5                  if(Alarm1Time[2]%0x10 == 0x00) Alarm1Time[2] += 0x09;
+ 405   5                  else Alarm1Time[2] -= 0x01;
+ 406   5                  if(Alarm1Time[2] > 0x23) Alarm1Time[2] = 0x23;
+ 407   5                  break;
+ 408   5                case 3:
+ 409   5                  if(Alarm1Time[1]/0x10 == 0x00) Alarm1Time[1] += 0x50;
+ 410   5                  else Alarm1Time[1] -= 0x10;
+ 411   5                  break;
+ 412   5                case 4:
+ 413   5                  if(Alarm1Time[1]%0x10 == 0x00) Alarm1Time[1] += 0x09;
+ 414   5                  else Alarm1Time[1] -= 0x01;
+ 415   5                  break;
+ 416   5              }
+ 417   4            }
+ 418   3          }
+ 419   2        }
+ 420   1        AlarmLED1 = 1;
+ 421   1        enAlarm1 = 1;
+ 422   1      }
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 8   
+
+ 423          
+ 424          void setAlarm2(void)      //…Ë÷√ƒ÷÷”2
+ 425          {
+ 426   1        unsigned char i;
+ 427   1        unsigned char select = 1;
+ 428   1        while(select<5)
+ 429   1        {
+ 430   2          displayFlashAlarm(select, Alarm2Time, 0);
+ 431   2          if(Alarm2Key ==0)
+ 432   2          {
+ 433   3            for(i=0; i<10; i++) displayFlashAlarm(select, Alarm2Time, 0);
+ 434   3            if(Alarm2Key ==0)
+ 435   3            {
+ 436   4              while(Alarm2Key ==0) displayFlashAlarm(select, Alarm2Time, 0);
+ 437   4              if(Alarm2Time[2]>0x23) Alarm2Time[2] = 0x20;
+ 438   4              select++;
+ 439   4            }
+ 440   3          }
+ 441   2          if(UpKey == 0)
+ 442   2          {
+ 443   3            for(i=0; i<5; i++) displayFlashAlarm(select, Alarm2Time, 0);
+ 444   3            if(UpKey == 0)
+ 445   3            {
+ 446   4              while(UpKey ==0) displayFlashAlarm(select, Alarm2Time, 0);
+ 447   4              switch (select)
+ 448   4              {
+ 449   5                case 1:
+ 450   5                  if(Alarm2Time[2]/0x10 < 0x02) Alarm2Time[2] += 0x10;
+ 451   5                  else Alarm2Time[2] %= 0x10;
+ 452   5                  break;
+ 453   5                case 2:
+ 454   5                  if(Alarm2Time[2]%0x10 < 0x09) Alarm2Time[2] += 0x01;
+ 455   5                  else Alarm2Time[2] = Alarm2Time[2]/0x10*0x10;
+ 456   5                  if(Alarm2Time[2] > 0x23) Alarm2Time[2] = 0x20;
+ 457   5                  break;
+ 458   5                case 3:
+ 459   5                  if(Alarm2Time[1]/0x10 < 0x05) Alarm2Time[1] += 0x10;
+ 460   5                  else Alarm2Time[1] %= 0x10;
+ 461   5                  break;
+ 462   5                case 4:
+ 463   5                  if(Alarm2Time[1]%0x10 < 0x09) Alarm2Time[1] += 0x01;
+ 464   5                  else Alarm2Time[1] = Alarm2Time[1]/0x10*0x10;
+ 465   5                  break;
+ 466   5              }
+ 467   4            }
+ 468   3          }
+ 469   2          if(DownKey == 0)
+ 470   2          {
+ 471   3            for(i=0; i<5; i++) displayFlashAlarm(select, Alarm2Time, 0);
+ 472   3            if(DownKey == 0)
+ 473   3            {
+ 474   4              while(DownKey ==0) displayFlashAlarm(select, Alarm2Time, 0);
+ 475   4              switch (select)
+ 476   4              {
+ 477   5                case 1:
+ 478   5                  if(Alarm2Time[2]/0x10 == 0x00) Alarm2Time[2] += 0x20;
+ 479   5                  else Alarm2Time[2] -= 0x10;
+ 480   5                  break;
+ 481   5                case 2:
+ 482   5                  if(Alarm2Time[2]%0x10 == 0x00) Alarm2Time[2] += 0x09;
+ 483   5                  else Alarm2Time[2] -= 0x01;
+ 484   5                  if(Alarm2Time[2] > 0x23) Alarm2Time[2] = 0x23;
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 9   
+
+ 485   5                  break;
+ 486   5                case 3:
+ 487   5                  if(Alarm2Time[1]/0x10 == 0x00) Alarm2Time[1] += 0x50;
+ 488   5                  else Alarm2Time[1] -= 0x10;
+ 489   5                  break;
+ 490   5                case 4:
+ 491   5                  if(Alarm2Time[1]%0x10 == 0x00) Alarm2Time[1] += 0x09;
+ 492   5                  else Alarm2Time[1] -= 0x01;
+ 493   5                  break;
+ 494   5              }
+ 495   4            }
+ 496   3          }
+ 497   2        }
+ 498   1        AlarmLED2 = 1;
+ 499   1        enAlarm2 = 1;
+ 500   1      }
+ 501          
+ 502          void showYear(void)
+ 503          {
+ 504   1        unsigned char i;
+ 505   1        for(i=0; i<255; i++) displayFlashAlarm(0, TIME, 1);
+ 506   1      }
+ 507          
+ 508          void Timer0_Init(void)    //1∫¡√Î@11.0592MHz
+ 509          {
+ 510   1        TMOD &= 0xF0;     //…Ë÷√∂® ±∆˜ƒ£ Ω
+ 511   1        TMOD |= 0x01;     //…Ë÷√∂® ±∆˜ƒ£ Ω
+ 512   1        TL0 = 0xCD;       //…Ë÷√∂® ±≥ı º÷µ
+ 513   1        TH0 = 0xD4;       //…Ë÷√∂® ±≥ı º÷µ
+ 514   1        TF0 = 0;          //«Â≥˝TF0±Í÷æ
+ 515   1        ET0 = 1;
+ 516   1        EA = 1;
+ 517   1        //TR0 = 1;        //∂® ±∆˜0ø™ ºº∆ ±
+ 518   1      }
+ 519          
+ 520          void tm0_isr() interrupt 1 using 1
+ 521          {
+ 522   1        TL0 = 0xCD;       //…Ë÷√∂® ±≥ı º÷µ
+ 523   1        TH0 = 0xD4;       //…Ë÷√∂® ±≥ı º÷µ
+ 524   1        if(flashCount<30) flashCount++;
+ 525   1        else
+ 526   1        {
+ 527   2          flashCount = 0;
+ 528   2          flashFlag = !flashFlag;
+ 529   2        }
+ 530   1      }
+ 531          
+ 532          void AlarmSync(void)
+ 533          {
+ 534   1        AlarmLED1 = enAlarm1;
+ 535   1        AlarmLED2 = enAlarm2;
+ 536   1        if(enAlarm1 &&
+ 537   1           TIME[0] == 0x00 &&
+ 538   1           Alarm1Time[1] == TIME[1] &&
+ 539   1           Alarm1Time[2] == TIME[2]) AlarmBeep();
+ 540   1        if(enAlarm2 &&
+ 541   1           TIME[0] == 0x00 &&
+ 542   1           Alarm2Time[1] == TIME[1] &&
+ 543   1           Alarm2Time[2] == TIME[2]) AlarmBeep();
+ 544   1      }
+ 545          
+ 546          void AlarmBeep(void)    //ƒ÷÷”œÏ¡Â
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 10  
+
+ 547          {
+ 548   1        unsigned char i, j, k;
+ 549   1        bit flag = 1;
+ 550   1        while(flag)
+ 551   1        {
+ 552   2          for(i=0; i<4; i++)
+ 553   2          {
+ 554   3            for(j=0; j<50; j++)
+ 555   3            {
+ 556   4              Beep = !Beep;
+ 557   4              for(k=0; k<15; k++) 
+ 558   4              {
+ 559   5                Delay50us();
+ 560   5                if(!(Alarm1Key && Alarm2Key && SetKey && UpKey && DownKey && BoomKey)) flag = 0;
+ 561   5                if(!flag) break;
+ 562   5              }
+ 563   4              if(!(Alarm1Key && Alarm2Key && SetKey && UpKey && DownKey && BoomKey)) flag = 0;
+ 564   4              if(!flag) break;
+ 565   4            }
+ 566   3            for(j=0; j<4; j++)
+ 567   3            {
+ 568   4              DisplayRealTime();
+ 569   4            }
+ 570   3            if(!(Alarm1Key && Alarm2Key && SetKey && UpKey && DownKey && BoomKey)) flag = 0;
+ 571   3            if(!flag) break;
+ 572   3          }
+ 573   2          for(i=0; i<20; i++)
+ 574   2          {
+ 575   3            DisplayRealTime();
+ 576   3            if(!(Alarm1Key && Alarm2Key && SetKey && UpKey && DownKey && BoomKey)) flag = 0;
+ 577   3            if(!flag) break;
+ 578   3          }
+ 579   2        }
+ 580   1        for(i=0; i<10; i++) Delay50us();
+ 581   1      }
+ 582          
+ 583          void setTime(void)
+ 584          {
+ 585   1        unsigned char i;
+ 586   1        unsigned char select = 1;
+ 587   1        while(select<11)
+ 588   1        {
+ 589   2          if(select <9) displayFlashAlarm(select, TIME, 0);
+ 590   2          if(select >8) displayFlashAlarm(select-6, TIME, 1);
+ 591   2          if(SetKey ==0)
+ 592   2          {
+ 593   3            if(select < 9) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 0);
+ 594   3            if(select > 8) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 1);
+ 595   3            if(SetKey ==0)
+ 596   3            {
+ 597   4              while(SetKey ==0)
+ 598   4              {
+ 599   5                if(select < 9) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 0);
+ 600   5                if(select > 8) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 1);
+ 601   5              }
+ 602   4              if(TIME[2] > 0x23) TIME[2] = 0x20;
+ 603   4              if(TIME[4] > 0x12) TIME[4] = 0x10;
+ 604   4              if(TIME[4] == 0x00) TIME[4] = 0x01;
+ 605   4              if(TIME[3] == 0x00) TIME[3] = 0x01;
+ 606   4              if(TIME[3] > 0x31 && (TIME[4] == 0x01 ||    //¥Û‘¬31ÃÏ
+ 607   4                                  TIME[4] == 0x03 ||
+ 608   4                                  TIME[4] == 0x05 ||
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 11  
+
+ 609   4                                  TIME[4] == 0x07 ||
+ 610   4                                  TIME[4] == 0x08 ||
+ 611   4                                  TIME[4] == 0x10 ||
+ 612   4                                  TIME[4] == 0x12)) TIME[3] = 0x30;
+ 613   4              if(TIME[3]>0x30 && (TIME[4] == 0x04 ||    //–°‘¬30ÃÏ
+ 614   4                                  TIME[4] == 0x06 ||
+ 615   4                                  TIME[4] == 0x09 ||
+ 616   4                                  TIME[4] == 0x11)) TIME[3] = 0x30;
+ 617   4              if(TIME[3]>0x29 && TIME[4] == 0x02 && TIME[6]%4 == 0) TIME[3] = 0x20;    //»Ú∂˛‘¬29ÃÏ
+ 618   4              if(TIME[3]>0x28 && TIME[4] == 0x02 && TIME[6]%4 != 0) TIME[3] = 0x20;    //∆Ω∂˛‘¬28ÃÏ
+ 619   4              select++;
+ 620   4            }
+ 621   3          }
+ 622   2          if(UpKey == 0)
+ 623   2          {
+ 624   3            if(select < 9) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 0);
+ 625   3            if(select > 8) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 1);
+ 626   3            if(UpKey == 0)
+ 627   3            {
+ 628   4              if(select < 9) while(UpKey ==0) displayFlashAlarm(select, TIME, 0);
+ 629   4              if(select > 8) while(UpKey ==0) displayFlashAlarm(select, TIME, 1);
+ 630   4              switch (select)
+ 631   4              {
+ 632   5                case 1:    //…Ë÷√–° ± ÆŒª
+ 633   5                  if(TIME[2]/0x10 < 0x02) TIME[2] += 0x10;
+ 634   5                  else TIME[2] %= 0x10;
+ 635   5                  break;
+ 636   5                case 2:    //…Ë÷√–° ±∏ˆŒª
+ 637   5                  if(TIME[2]%0x10 < 0x09) TIME[2] += 0x01;
+ 638   5                  else TIME[2] = TIME[2]/0x10*0x10;
+ 639   5                  if(TIME[2] > 0x23) TIME[2] = 0x20;
+ 640   5                  break;
+ 641   5                case 3:    //…Ë÷√∑÷÷” ÆŒª
+ 642   5                  if(TIME[1]/0x10 < 0x05) TIME[1] += 0x10;
+ 643   5                  else TIME[1] %= 0x10;
+ 644   5                  break;
+ 645   5                case 4:    //…Ë÷√∑÷÷”∏ˆŒª
+ 646   5                  if(TIME[1]%0x10 < 0x09) TIME[1] += 0x01;
+ 647   5                  else TIME[1] = TIME[1]/0x10*0x10;
+ 648   5                  break;
+ 649   5                case 5:    //…Ë÷√‘¬∑› ÆŒª
+ 650   5                  if(TIME[4]/0x10 < 0x01) TIME[4] += 0x10;
+ 651   5                  else TIME[4] %= 0x10;
+ 652   5                  break;
+ 653   5                case 6:    //…Ë÷√‘¬∑›∏ˆŒª
+ 654   5                  if(TIME[4]%0x10 < 0x09) TIME[4] += 0x01;
+ 655   5                  else TIME[4] = TIME[4]/0x10*0x10;
+ 656   5                  if(TIME[4] > 0x12) TIME[4] = 0x10;
+ 657   5                  if(TIME[4] == 0x00) TIME[4] = 0x01;
+ 658   5                  break;
+ 659   5                case 7:    //…Ë÷√»’∆⁄ ÆŒª
+ 660   5                  if(TIME[3]/0x10 < 0x03) TIME[3] += 0x10;
+ 661   5                  else TIME[3] %= 0x10;
+ 662   5                  break;
+ 663   5                case 8:    //…Ë÷√»’∆⁄∏ˆŒª
+ 664   5                  if(TIME[3]%0x10 < 0x09) TIME[3] +=0x01;
+ 665   5                  else TIME[3] = TIME[3]/0x10*0x10;
+ 666   5                  if(TIME[3] == 0x00) TIME[3] = 0x01;
+ 667   5                  if(TIME[3]>0x31 && (TIME[4] == 0x01 ||    //¥Û‘¬31ÃÏ
+ 668   5                                      TIME[4] == 0x03 ||
+ 669   5                                      TIME[4] == 0x05 ||
+ 670   5                                      TIME[4] == 0x07 ||
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 12  
+
+ 671   5                                      TIME[4] == 0x08 ||
+ 672   5                                      TIME[4] == 0x10 ||
+ 673   5                                      TIME[4] == 0x12)) TIME[3] = 0x30;
+ 674   5                  if(TIME[3]>0x30 && (TIME[4] == 0x04 ||    //–°‘¬30ÃÏ
+ 675   5                                      TIME[4] == 0x06 ||
+ 676   5                                      TIME[4] == 0x09 ||
+ 677   5                                      TIME[4] == 0x11)) TIME[3] = 0x30;
+ 678   5                  if(TIME[3]>0x29 && TIME[4] == 0x02 && TIME[6]%4 == 0) TIME[3] = 0x20;    //»Ú∂˛‘¬29ÃÏ
+ 679   5                  if(TIME[3]>0x28 && TIME[4] == 0x02 && TIME[6]%4 != 0) TIME[3] = 0x20;    //∆Ω∂˛‘¬28ÃÏ
+ 680   5                  break;
+ 681   5                case 9:    //…Ë÷√ƒÍ10Œª
+ 682   5                  if(TIME[6]/0x10 <0x09) TIME[6] += 0x10;
+ 683   5                  else TIME[6] %= 0x10;
+ 684   5                  break;
+ 685   5                case 10:    //…Ë÷√ƒÍ∏ˆŒª
+ 686   5                  if(TIME[6]%0x10 <0x09) TIME[6] += 0x01;
+ 687   5                  else TIME[6] = TIME[6]/0x10*0x10;
+ 688   5                  break;
+ 689   5              }
+ 690   4            }
+ 691   3          }
+ 692   2          if(DownKey == 0)
+ 693   2          {
+ 694   3            if(select < 9) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 0);
+ 695   3            if(select > 8) for(i=0; i<10; i++) displayFlashAlarm(select, TIME, 1);
+ 696   3            if(DownKey == 0)
+ 697   3            {
+ 698   4              if(select < 9) while(UpKey ==0) displayFlashAlarm(select, TIME, 0);
+ 699   4              if(select > 8) while(UpKey ==0) displayFlashAlarm(select, TIME, 1);
+ 700   4              switch (select)
+ 701   4              {
+ 702   5                case 1:    //…Ë÷√–° ± ÆŒª
+ 703   5                  if(TIME[2]/0x10 == 0x00) TIME[2] += 0x20;
+ 704   5                  else TIME[2] -= 0x10;
+ 705   5                  break;
+ 706   5                case 2:    //…Ë÷√–° ±∏ˆŒª
+ 707   5                  if(TIME[2]%0x10 == 0x00) TIME[2] += 0x09;
+ 708   5                  else TIME[2] -= 0x01;
+ 709   5                  if(TIME[2] > 0x23) TIME[2] = 0x23;
+ 710   5                  break;
+ 711   5                case 3:    //…Ë÷√∑÷÷” ÆŒª
+ 712   5                  if(TIME[1]/0x10 == 0x00) TIME[1] += 0x50;
+ 713   5                  else TIME[1] -= 0x10;
+ 714   5                  break;
+ 715   5                case 4:    //…Ë÷√∑÷÷”∏ˆŒª
+ 716   5                  if(TIME[1]%0x10 == 0x00) TIME[1] += 0x09;
+ 717   5                  else TIME[1] -= 0x01;
+ 718   5                  break;
+ 719   5                case 5:    //…Ë÷√‘¬∑› ÆŒª
+ 720   5                  if(TIME[4]/0x10 == 0x00) TIME[4] += 0x10;
+ 721   5                  else TIME[4] -= 0x10;
+ 722   5                  break;
+ 723   5                case 6:    //…Ë÷√‘¬∑›∏ˆŒª
+ 724   5                  if(TIME[4]%0x10 == 0x00) TIME[4] += 0x09;
+ 725   5                  else TIME[4] -= 0x01;
+ 726   5                  if(TIME[4] > 0x12) TIME[4] = 0x10;
+ 727   5                  if(TIME[4] == 0x00) TIME[4] = 0x09;
+ 728   5                  break;
+ 729   5                case 7:    //…Ë÷√»’∆⁄ ÆŒª
+ 730   5                  if(TIME[3]/0x10 == 0x00)
+ 731   5                    if(TIME[4] == 0x02) TIME[3] += 0x20;
+ 732   5                    else TIME[3] += 0x30;
+C51 COMPILER V9.60.7.0   BOOMCLOCK                                                         10/09/2024 22:37:19 PAGE 13  
+
+ 733   5                  else TIME[3] -= 0x10;
+ 734   5                  break;
+ 735   5                case 8:    //…Ë÷√»’∆⁄∏ˆŒª
+ 736   5                  if(TIME[3]%0x10 == 0x00) TIME[3] += 0x09;
+ 737   5                  else TIME[3] -= 0x01;
+ 738   5                  if(TIME[3] == 0x00) TIME[3] = 0x09;
+ 739   5                  if(TIME[3]>0x31 && (TIME[4] == 0x01 ||    //¥Û‘¬31ÃÏ
+ 740   5                                      TIME[4] == 0x03 ||
+ 741   5                                      TIME[4] == 0x05 ||
+ 742   5                                      TIME[4] == 0x07 ||
+ 743   5                                      TIME[4] == 0x08 ||
+ 744   5                                      TIME[4] == 0x10 ||
+ 745   5                                      TIME[4] == 0x12)) TIME[3] = 0x31;
+ 746   5                  if(TIME[3]>0x30 && (TIME[4] == 0x04 ||    //–°‘¬30ÃÏ
+ 747   5                                      TIME[4] == 0x06 ||
+ 748   5                                      TIME[4] == 0x09 ||
+ 749   5                                      TIME[4] == 0x11)) TIME[3] = 0x30;
+ 750   5                  if(TIME[3]>0x29 && TIME[4] == 0x02 && TIME[6]%4 == 0) TIME[3] = 0x29;    //»Ú∂˛‘¬29ÃÏ
+ 751   5                  if(TIME[3]>0x28 && TIME[4] == 0x02 && TIME[6]%4 != 0) TIME[3] = 0x28;    //∆Ω∂˛‘¬28ÃÏ
+ 752   5                  break;
+ 753   5                case 9:    //…Ë÷√ƒÍ10Œª
+ 754   5                  if(TIME[6]/0x10 == 0x00) TIME[6] += 0x10;
+ 755   5                  else TIME[6] -= 0x10;
+ 756   5                  break;
+ 757   5                case 10:    //…Ë÷√ƒÍ∏ˆŒª
+ 758   5                  if(TIME[6]%0x10 == 0x00) TIME[6] += 0x09;
+ 759   5                  else TIME[6] -= 0x01;
+ 760   5                  break;
+ 761   5              }
+ 762   4            }
+ 763   3          }
+ 764   2        }
+ 765   1        TIME[0] = 0x00;
+ 766   1        ds1302WriteTime();
+ 767   1      }
+ 768          
+ 769          #endif
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   4238    ----
+   CONSTANT SIZE    =     38    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     23      15
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3       3
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

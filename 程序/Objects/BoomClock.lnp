@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\BoomClock.obj" 
+TO ".\Objects\BoomClock" 
+PRINT(".\Listings\BoomClock.m51") RAMSIZE(256) 

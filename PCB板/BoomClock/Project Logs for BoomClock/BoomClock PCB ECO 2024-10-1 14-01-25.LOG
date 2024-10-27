@@ -1,0 +1,12 @@
+Added Pin To Net: NetName=VCC Pin=RP1-1
+Added Pin To Net: NetName=A0 Pin=RP1-2
+Added Pin To Net: NetName=A1 Pin=RP1-3
+Added Pin To Net: NetName=A2 Pin=RP1-4
+Added Pin To Net: NetName=A3 Pin=RP1-5
+Added Pin To Net: NetName=A4 Pin=RP1-6
+Added Pin To Net: NetName=A5 Pin=RP1-7
+Added Pin To Net: NetName=A6 Pin=RP1-8
+Added Pin To Net: NetName=A7 Pin=RP1-9
+Added Pin To Net: NetName=VCC Pin=RP3-1
+Added Member To Class: ClassName=BoomClock Member=Component RP1 RES_PACK9
+Added Member To Class: ClassName=BoomClock Member=Component RP2 RES_PACK9

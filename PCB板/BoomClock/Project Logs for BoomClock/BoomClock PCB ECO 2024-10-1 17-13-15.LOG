@@ -1,0 +1,218 @@
+Added Pin To Net: NetName=NetBT1_1 Pin=BT1-1
+Added Pin To Net: NetName=NetBT1_2 Pin=BT1-2
+Added Pin To Net: NetName=NetBT3_1 Pin=BT3-1
+Added Pin To Net: NetName=GND Pin=BT3-2
+Added Pin To Net: NetName=NetBZ_1 Pin=BZ-1
+Added Pin To Net: NetName=NetBZ_2 Pin=BZ-2
+Added Pin To Net: NetName=GND Pin=C1-1
+Added Pin To Net: NetName=VCC Pin=C1-2
+Added Pin To Net: NetName=GND Pin=C2-1
+Added Pin To Net: NetName=XT2 Pin=C2-2
+Added Pin To Net: NetName=GND Pin=C3-1
+Added Pin To Net: NetName=XT1 Pin=C3-2
+Added Pin To Net: NetName=GND Pin=C4-1
+Added Pin To Net: NetName=NetBT3_1 Pin=C4-2
+Added Pin To Net: NetName=Alarm1 Pin=D1-A
+Added Pin To Net: NetName=NetD1_K Pin=D1-K
+Added Pin To Net: NetName=Alarm2 Pin=D2-A
+Added Pin To Net: NetName=NetD2_K Pin=D2-K
+Added Pin To Net: NetName=VCC Pin=EC1-1
+Added Pin To Net: NetName=RST Pin=EC1-2
+Added Pin To Net: NetName=K1 Pin=K1-1
+Added Pin To Net: NetName=GND Pin=K1-2
+Added Pin To Net: NetName=K2 Pin=K2-1
+Added Pin To Net: NetName=GND Pin=K2-2
+Added Pin To Net: NetName=K3 Pin=K3-1
+Added Pin To Net: NetName=GND Pin=K3-2
+Added Pin To Net: NetName=K4 Pin=K4-1
+Added Pin To Net: NetName=GND Pin=K4-2
+Added Pin To Net: NetName=K5 Pin=K5-1
+Added Pin To Net: NetName=GND Pin=K5-2
+Added Pin To Net: NetName=Boom Pin=K6-1
+Added Pin To Net: NetName=GND Pin=K6-2
+Added Pin To Net: NetName=B4 Pin=LED1-1
+Added Pin To Net: NetName=B3 Pin=LED1-2
+Added Pin To Net: NetName=B7 Pin=LED1-3
+Added Pin To Net: NetName=B2 Pin=LED1-4
+Added Pin To Net: NetName=B6 Pin=LED1-5
+Added Pin To Net: NetName=DIG4 Pin=LED1-6
+Added Pin To Net: NetName=B1 Pin=LED1-7
+Added Pin To Net: NetName=DIG3 Pin=LED1-8
+Added Pin To Net: NetName=DIG2 Pin=LED1-9
+Added Pin To Net: NetName=B5 Pin=LED1-10
+Added Pin To Net: NetName=B0 Pin=LED1-11
+Added Pin To Net: NetName=DIG1 Pin=LED1-12
+Added Pin To Net: NetName=B4 Pin=LED2-1
+Added Pin To Net: NetName=B3 Pin=LED2-2
+Added Pin To Net: NetName=B2 Pin=LED2-3
+Added Pin To Net: NetName=B6 Pin=LED2-4
+Added Pin To Net: NetName=B7 Pin=LED2-5
+Added Pin To Net: NetName=DIG6 Pin=LED2-6
+Added Pin To Net: NetName=B0 Pin=LED2-7
+Added Pin To Net: NetName=B1 Pin=LED2-8
+Added Pin To Net: NetName=DIG5 Pin=LED2-9
+Added Pin To Net: NetName=B5 Pin=LED2-10
+Added Pin To Net: NetName=B4 Pin=LED3-1
+Added Pin To Net: NetName=B3 Pin=LED3-2
+Added Pin To Net: NetName=B2 Pin=LED3-3
+Added Pin To Net: NetName=B6 Pin=LED3-4
+Added Pin To Net: NetName=B7 Pin=LED3-5
+Added Pin To Net: NetName=DIG8 Pin=LED3-6
+Added Pin To Net: NetName=B0 Pin=LED3-7
+Added Pin To Net: NetName=B1 Pin=LED3-8
+Added Pin To Net: NetName=DIG7 Pin=LED3-9
+Added Pin To Net: NetName=B5 Pin=LED3-10
+Added Pin To Net: NetName=GND Pin=P1-1
+Added Pin To Net: NetName=Signal2 Pin=P1-2
+Added Pin To Net: NetName=Signal1 Pin=P1-3
+Added Pin To Net: NetName=NetQ1_B Pin=Q1-B
+Added Pin To Net: NetName=NetBZ_1 Pin=Q1-C
+Added Pin To Net: NetName=VCC Pin=Q1-E
+Added Pin To Net: NetName=GND Pin=R1-1
+Added Pin To Net: NetName=RST Pin=R1-2
+Added Pin To Net: NetName=Beep Pin=R2-1
+Added Pin To Net: NetName=NetQ1_B Pin=R2-2
+Added Pin To Net: NetName=GND Pin=R3-1
+Added Pin To Net: NetName=NetBZ_2 Pin=R3-2
+Added Pin To Net: NetName=NetD1_K Pin=R4-1
+Added Pin To Net: NetName=GND Pin=R4-2
+Added Pin To Net: NetName=NetD2_K Pin=R5-1
+Added Pin To Net: NetName=GND Pin=R5-2
+Added Pin To Net: NetName=VCC Pin=RP1-1
+Added Pin To Net: NetName=A0 Pin=RP1-2
+Added Pin To Net: NetName=A1 Pin=RP1-3
+Added Pin To Net: NetName=A2 Pin=RP1-4
+Added Pin To Net: NetName=A3 Pin=RP1-5
+Added Pin To Net: NetName=A4 Pin=RP1-6
+Added Pin To Net: NetName=A5 Pin=RP1-7
+Added Pin To Net: NetName=A6 Pin=RP1-8
+Added Pin To Net: NetName=A7 Pin=RP1-9
+Added Pin To Net: NetName=VCC Pin=RP2-1
+Added Pin To Net: NetName=K1 Pin=RP2-2
+Added Pin To Net: NetName=K2 Pin=RP2-3
+Added Pin To Net: NetName=K3 Pin=RP2-4
+Added Pin To Net: NetName=K4 Pin=RP2-5
+Added Pin To Net: NetName=K5 Pin=RP2-6
+Added Pin To Net: NetName=Signal1 Pin=RP2-7
+Added Pin To Net: NetName=Signal2 Pin=RP2-8
+Added Pin To Net: NetName=Boom Pin=RP2-9
+Added Pin To Net: NetName=VCC Pin=RP3-1
+Added Pin To Net: NetName=DIG8 Pin=RP3-2
+Added Pin To Net: NetName=DIG7 Pin=RP3-3
+Added Pin To Net: NetName=DIG6 Pin=RP3-4
+Added Pin To Net: NetName=DIG5 Pin=RP3-5
+Added Pin To Net: NetName=DIG4 Pin=RP3-6
+Added Pin To Net: NetName=DIG3 Pin=RP3-7
+Added Pin To Net: NetName=DIG2 Pin=RP3-8
+Added Pin To Net: NetName=DIG1 Pin=RP3-9
+Added Pin To Net: NetName=NetS1_2 Pin=S1-2
+Added Pin To Net: NetName=VCC Pin=S1-3
+Added Pin To Net: NetName=GND Pin=S1-4
+Added Pin To Net: NetName=NetS1_5 Pin=S1-5
+Added Pin To Net: NetName=K1 Pin=U1-1
+Added Pin To Net: NetName=K2 Pin=U1-2
+Added Pin To Net: NetName=K3 Pin=U1-3
+Added Pin To Net: NetName=K4 Pin=U1-4
+Added Pin To Net: NetName=K5 Pin=U1-5
+Added Pin To Net: NetName=Signal1 Pin=U1-6
+Added Pin To Net: NetName=Signal2 Pin=U1-7
+Added Pin To Net: NetName=Boom Pin=U1-8
+Added Pin To Net: NetName=RST Pin=U1-9
+Added Pin To Net: NetName=Alarm1 Pin=U1-12
+Added Pin To Net: NetName=Alarm2 Pin=U1-13
+Added Pin To Net: NetName=P3.4 Pin=U1-14
+Added Pin To Net: NetName=P3.5 Pin=U1-15
+Added Pin To Net: NetName=P3.6 Pin=U1-16
+Added Pin To Net: NetName=Beep Pin=U1-17
+Added Pin To Net: NetName=XT2 Pin=U1-18
+Added Pin To Net: NetName=XT1 Pin=U1-19
+Added Pin To Net: NetName=GND Pin=U1-20
+Added Pin To Net: NetName=DIG1 Pin=U1-21
+Added Pin To Net: NetName=DIG2 Pin=U1-22
+Added Pin To Net: NetName=DIG3 Pin=U1-23
+Added Pin To Net: NetName=DIG4 Pin=U1-24
+Added Pin To Net: NetName=DIG5 Pin=U1-25
+Added Pin To Net: NetName=DIG6 Pin=U1-26
+Added Pin To Net: NetName=DIG7 Pin=U1-27
+Added Pin To Net: NetName=DIG8 Pin=U1-28
+Added Pin To Net: NetName=A7 Pin=U1-32
+Added Pin To Net: NetName=A6 Pin=U1-33
+Added Pin To Net: NetName=A5 Pin=U1-34
+Added Pin To Net: NetName=A4 Pin=U1-35
+Added Pin To Net: NetName=A3 Pin=U1-36
+Added Pin To Net: NetName=A2 Pin=U1-37
+Added Pin To Net: NetName=A1 Pin=U1-38
+Added Pin To Net: NetName=A0 Pin=U1-39
+Added Pin To Net: NetName=VCC Pin=U1-40
+Added Pin To Net: NetName=VCC Pin=U2-1
+Added Pin To Net: NetName=A0 Pin=U2-2
+Added Pin To Net: NetName=A1 Pin=U2-3
+Added Pin To Net: NetName=A2 Pin=U2-4
+Added Pin To Net: NetName=A3 Pin=U2-5
+Added Pin To Net: NetName=A4 Pin=U2-6
+Added Pin To Net: NetName=A5 Pin=U2-7
+Added Pin To Net: NetName=A6 Pin=U2-8
+Added Pin To Net: NetName=A7 Pin=U2-9
+Added Pin To Net: NetName=GND Pin=U2-10
+Added Pin To Net: NetName=B7 Pin=U2-11
+Added Pin To Net: NetName=B6 Pin=U2-12
+Added Pin To Net: NetName=B5 Pin=U2-13
+Added Pin To Net: NetName=B4 Pin=U2-14
+Added Pin To Net: NetName=B3 Pin=U2-15
+Added Pin To Net: NetName=B2 Pin=U2-16
+Added Pin To Net: NetName=B1 Pin=U2-17
+Added Pin To Net: NetName=B0 Pin=U2-18
+Added Pin To Net: NetName=GND Pin=U2-19
+Added Pin To Net: NetName=VCC Pin=U2-20
+Added Pin To Net: NetName=VCC Pin=U3-1
+Added Pin To Net: NetName=NetU3_2 Pin=U3-2
+Added Pin To Net: NetName=NetU3_3 Pin=U3-3
+Added Pin To Net: NetName=GND Pin=U3-4
+Added Pin To Net: NetName=P3.6 Pin=U3-5
+Added Pin To Net: NetName=P3.5 Pin=U3-6
+Added Pin To Net: NetName=P3.4 Pin=U3-7
+Added Pin To Net: NetName=NetBT3_1 Pin=U3-8
+Added Pin To Net: NetName=NetS1_2 Pin=U4-1
+Added Pin To Net: NetName=NetS1_5 Pin=U4-2
+Added Pin To Net: NetName=NetBT1_1 Pin=U4-3
+Added Pin To Net: NetName=NetBT1_2 Pin=U4-4
+Added Pin To Net: NetName=XT1 Pin=X1-1
+Added Pin To Net: NetName=XT2 Pin=X1-2
+Added Pin To Net: NetName=NetU3_3 Pin=X2-1
+Added Pin To Net: NetName=NetU3_2 Pin=X2-2
+Added Member To Class: ClassName=BoomClock Member=Component BT1 18650
+Added Member To Class: ClassName=BoomClock Member=Component BT3 Battery
+Added Member To Class: ClassName=BoomClock Member=Component BZ Beep
+Added Member To Class: ClassName=BoomClock Member=Component C1 104
+Added Member To Class: ClassName=BoomClock Member=Component C2 33p
+Added Member To Class: ClassName=BoomClock Member=Component C3 33p
+Added Member To Class: ClassName=BoomClock Member=Component C4 104
+Added Member To Class: ClassName=BoomClock Member=Component D1 LED
+Added Member To Class: ClassName=BoomClock Member=Component D2 LED
+Added Member To Class: ClassName=BoomClock Member=Component EC1 10uf
+Added Member To Class: ClassName=BoomClock Member=Component K1 Alarm1
+Added Member To Class: ClassName=BoomClock Member=Component K2 Alarm2
+Added Member To Class: ClassName=BoomClock Member=Component K3 Set
+Added Member To Class: ClassName=BoomClock Member=Component K4 Up
+Added Member To Class: ClassName=BoomClock Member=Component K5 Down
+Added Member To Class: ClassName=BoomClock Member=Component K6 Boom
+Added Member To Class: ClassName=BoomClock Member=Component LED1 Digital_4_time
+Added Member To Class: ClassName=BoomClock Member=Component LED2 Digital_2
+Added Member To Class: ClassName=BoomClock Member=Component LED3 Digital_2
+Added Member To Class: ClassName=BoomClock Member=Component P1 Header 3
+Added Member To Class: ClassName=BoomClock Member=Component Q1 PNP
+Added Member To Class: ClassName=BoomClock Member=Component R1 10k
+Added Member To Class: ClassName=BoomClock Member=Component R2 100
+Added Member To Class: ClassName=BoomClock Member=Component R3 100
+Added Member To Class: ClassName=BoomClock Member=Component R4 470
+Added Member To Class: ClassName=BoomClock Member=Component R5 470
+Added Member To Class: ClassName=BoomClock Member=Component RP1 RES_PACK9
+Added Member To Class: ClassName=BoomClock Member=Component RP2 RES_PACK9
+Added Member To Class: ClassName=BoomClock Member=Component RP3 RES_PACK9
+Added Member To Class: ClassName=BoomClock Member=Component S1 KFT DIP-8X8
+Added Member To Class: ClassName=BoomClock Member=Component U1 STC89C51RC
+Added Member To Class: ClassName=BoomClock Member=Component U2 74HC245D
+Added Member To Class: ClassName=BoomClock Member=Component U3 DS1302
+Added Member To Class: ClassName=BoomClock Member=Component U4 LX-LBC3
+Added Member To Class: ClassName=BoomClock Member=Component X1 XTAL-2P
+Added Member To Class: ClassName=BoomClock Member=Component X2 32.768

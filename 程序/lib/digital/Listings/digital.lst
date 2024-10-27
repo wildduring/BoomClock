@@ -1,0 +1,25 @@
+C51 COMPILER V9.60.7.0   DIGITAL                                                           09/19/2024 22:23:58 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DIGITAL
+OBJECT MODULE PLACED IN .\Objects\digital.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE digital.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\digital.lst) TABS(2) OBJECT(.\Objects\digital.obj)
+
+line level    source
+
+   1          #ifndef _digital_c_
+   2          #define _digital_c_
+   3          
+   4          #include "digital.h"
+   5          
+   6          void display(unsigned char location, number)
+   7          {
+   8   1        P0 = num_code[number];
+   9   1        P2 = ~(1<<(location-1));
+  10   1      }
+*** ERROR C237 IN LINE 10 OF digital.c: '_display': function already has a body
+  11          
+  12          #endif
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

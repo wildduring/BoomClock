@@ -1,0 +1,188 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/09/2024 09:33:02 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REG51.H>
+   2          #include "Delay.h"
+   3          #include "Timer0.h"
+   4           
+   5          typedef unsigned int u16;
+   6          typedef unsigned char u8;
+   7           
+   8          #define SPEED 500   //播放速度，值为四分音符的时长(ms)
+   9           
+  10          sbit Buzzer = P2^5; //蜂鸣器端口定义
+  11           
+  12          //音符与索引对应表，P：休止符，L：低音，M：中音，H：高音，下划线：升半音符号#
+  13          #define P 0
+  14          #define L1  1
+  15          #define L1_ 2
+  16          #define L2  3
+  17          #define L2_ 4
+  18          #define L3  5
+  19          #define L4  6
+  20          #define L4_ 7
+  21          #define L5  8
+  22          #define L5_ 9
+  23          #define L6  10
+  24          #define L6_ 11
+  25          #define L7  12
+  26          #define M1  13
+  27          #define M1_ 14
+  28          #define M2  15
+  29          #define M2_ 16
+  30          #define M3  17
+  31          #define M4  18
+  32          #define M4_ 19
+  33          #define M5  20
+  34          #define M5_ 21
+  35          #define M6  22
+  36          #define M6_ 23
+  37          #define M7  24
+  38          #define H1  25
+  39          #define H1_ 26
+  40          #define H2  27
+  41          #define H2_ 28
+  42          #define H3  29
+  43          #define H4  30
+  44          #define H4_ 31
+  45          #define H5  32
+  46          #define H5_ 33
+  47          #define H6  34
+  48          #define H6_ 35
+  49          #define H7  36
+  50           
+  51          //索引与频率对照表
+  52          u16 FreqTable[] = {0, 63628,63731,63835,63928,64021,64103,64185,64260,64331,
+  53                      64400,64463,64524,64580,64633,64684,64732,64777,64820,
+  54                        64860,64898,64934,64968,65000,65030,65058,65085,65110,
+C51 COMPILER V9.60.7.0   MAIN                                                              10/09/2024 09:33:02 PAGE 2   
+
+  55                        65134,65157,65178,65191,65217,65235,65252,65268,65283}; 
+  56          //乐谱
+  57          u8 code Music[] = {
+  58              //音符， 时值，
+  59            P,  2,
+  60            L6, 1,
+  61            L6, 1,
+  62            M3, 2,
+  63            M3, 2,
+  64            
+  65            L6, 4,
+  66            P,  4,
+  67            P,  4,
+  68            P,  2,
+  69            L6, 1,
+  70            
+  71            L6, 1 + 2,
+  72            
+  73            P,  2,
+  74            P,  4, 
+  75            P,  2,
+  76            L6, 1,
+  77            L6, 1,
+  78            M3, 2,
+  79            M3, 2,
+  80            
+  81            L6, 4,
+  82            P,  4,
+  83            P,  4,
+  84            P,  2,
+  85            
+  86            L6, 1 + 2,
+  87            
+  88            P,  2,
+  89            P,  2,
+  90            L6, 1,
+  91            L6, 1,
+  92            L6, 2,
+  93            L6, 1,
+  94            L6, 1,
+  95            M3, 2,
+  96            M3, 2,
+  97            
+  98            L6, 4,
+  99            P,  4,
+ 100            P,  4,
+ 101            P,  2,
+ 102            L6, 1,
+ 103            
+ 104            L6, 1 + 2,
+ 105            
+ 106            P,  2,
+ 107            P,  4,
+ 108            P,  2,
+ 109            L6, 1,
+ 110            L6, 1,
+ 111            M3, 2,
+ 112            M3, 2,
+ 113            
+ 114            L6, 4,
+ 115            P,  4,
+ 116            P,  4,
+C51 COMPILER V9.60.7.0   MAIN                                                              10/09/2024 09:33:02 PAGE 3   
+
+ 117            P,  2,
+ 118            L6, 1,
+ 119            L6, 1,
+ 120            
+ 121            0xFF  //终止标志
+ 122          };
+ 123           
+ 124          unsigned char FreqSelect,MusicSelect;
+ 125           
+ 126          void main()
+ 127          {
+ 128   1        Timer0Init();
+ 129   1        while(1)
+ 130   1        {
+ 131   2          if(Music[MusicSelect]!=0xFF)        //如果不是停止标志位
+ 132   2          {
+ 133   3            FreqSelect=Music[MusicSelect];    //选择音符对应的频率
+ 134   3            MusicSelect++;
+ 135   3            Delay(SPEED/4*Music[MusicSelect]);//选择音符对应的时值
+ 136   3            MusicSelect++;
+ 137   3            TR0=0;
+ 138   3            Delay(5);                         //音符间短暂停顿，相当于抬手
+ 139   3            TR0=1;
+ 140   3          }
+ 141   2          else                                //如果是停止标志位
+ 142   2          {
+ 143   3            TR0=0;
+ 144   3            Delay(50);
+ 145   3            TR0 = 1;
+ 146   3            //MusicSelect = 0;                  //停顿后循环播放
+ 147   3          }
+ 148   2        }
+ 149   1      }
+ 150           
+ 151          void Timer0_Routine() interrupt 1
+ 152          {
+ 153   1        if(FreqTable[FreqSelect])             //如果不是休止符
+ 154   1        {
+ 155   2          /*取对应频率值的重装载值到定时器*/
+ 156   2          TL0 = FreqTable[FreqSelect]%256;    //设置定时初值 //第二次中断实现
+ 157   2          TH0 = FreqTable[FreqSelect]/256;    //设置定时初值//
+ 158   2          Buzzer=!Buzzer; //翻转蜂鸣器IO口
+ 159   2        }
+ 160   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    110    ----
+   CONSTANT SIZE    =    103    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     76    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

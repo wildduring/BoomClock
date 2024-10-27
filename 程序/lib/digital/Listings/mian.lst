@@ -1,0 +1,64 @@
+C51 COMPILER V9.60.7.0   MIAN                                                              10/08/2024 17:10:38 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MIAN
+OBJECT MODULE PLACED IN .\Objects\mian.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE mian.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\mian.lst) TABS(2) OBJECT(.\Objects\mian.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include <intrins.h>
+   3          
+   4          #include "digital.h"
+   5          
+   6          void Delay50us(void);
+   7          void BrightnessCtrl(unsigned int val);
+   8          
+   9          unsigned int Brightness = 20;
+  10          unsigned char i;
+  11          
+  12          void main(void)
+  13          {
+  14   1        while(1)
+  15   1        {
+  16   2          for(i=0; i<5 ; i++)
+  17   2          {
+  18   3            display(i+1, i);
+  19   3            BrightnessCtrl(Brightness);
+  20   3          }
+  21   2        }
+  22   1      }
+  23          
+  24          void BrightnessCtrl(unsigned int val)
+  25          {
+  26   1        while(val>0)
+  27   1        {
+  28   2          Delay50us();
+  29   2          val -= 1;
+  30   2        }
+  31   1      }
+  32          
+  33          void Delay50us(void)  //—” ±100us@11.0592MHz
+  34          {
+  35   1        unsigned char data i;
+  36   1      
+  37   1        _nop_();
+  38   1        i = 20;
+  39   1        while (--i);
+  40   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    102    ----
+   CONSTANT SIZE    =     22    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

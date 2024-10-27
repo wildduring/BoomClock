@@ -1,0 +1,36 @@
+Added Pin To Net: NetName=VCC Pin=RP1-1
+Added Pin To Net: NetName=K1 Pin=RP1-2
+Added Pin To Net: NetName=K2 Pin=RP1-3
+Added Pin To Net: NetName=K3 Pin=RP1-4
+Added Pin To Net: NetName=K4 Pin=RP1-5
+Added Pin To Net: NetName=K5 Pin=RP1-6
+Added Pin To Net: NetName=Boom Pin=RP1-7
+Added Pin To Net: NetName=GND Pin=RP2-1
+Added Pin To Net: NetName=DIG8 Pin=RP2-2
+Added Pin To Net: NetName=DIG7 Pin=RP2-3
+Added Pin To Net: NetName=DIG6 Pin=RP2-4
+Added Pin To Net: NetName=DIG5 Pin=RP2-5
+Added Pin To Net: NetName=DIG4 Pin=RP2-6
+Added Pin To Net: NetName=DIG3 Pin=RP2-7
+Added Pin To Net: NetName=DIG2 Pin=RP2-8
+Added Pin To Net: NetName=DIG1 Pin=RP2-9
+Added Pin To Net: NetName=VCC Pin=U2-1
+Added Pin To Net: NetName=GND Pin=U2-10
+Added Pin To Net: NetName=B7 Pin=U2-11
+Added Pin To Net: NetName=B6 Pin=U2-12
+Added Pin To Net: NetName=B5 Pin=U2-13
+Added Pin To Net: NetName=B4 Pin=U2-14
+Added Pin To Net: NetName=B3 Pin=U2-15
+Added Pin To Net: NetName=B2 Pin=U2-16
+Added Pin To Net: NetName=B1 Pin=U2-17
+Added Pin To Net: NetName=B0 Pin=U2-18
+Added Pin To Net: NetName=GND Pin=U2-19
+Added Pin To Net: NetName=VCC Pin=U2-20
+Added Member To Class: ClassName=BoomClock Member=Component LED1 Digital_4_time
+Added Member To Class: ClassName=BoomClock Member=Component LED2 Digital_2
+Added Member To Class: ClassName=BoomClock Member=Component LED3 Digital_2
+Added Member To Class: ClassName=BoomClock Member=Component RP1 RES_PACK9
+Added Member To Class: ClassName=BoomClock Member=Component RP2 RES_PACK9
+Added Member To Class: ClassName=BoomClock Member=Component U2 74HC245D
+Added Member To Class: ClassName=BoomClock Member=Component U3 DS1302
+Added Member To Class: ClassName=BoomClock Member=Component U4 LX-LBC3
