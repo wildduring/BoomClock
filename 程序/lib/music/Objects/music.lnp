@@ -1,6 +1,4 @@
 ".\Objects\STARTUP.obj",
-".\Objects\Delay.obj",
-".\Objects\main.obj",
-".\Objects\Timer0.obj" 
+".\Objects\main.obj" 
 TO ".\Objects\music" 
 PRINT(".\Listings\music.m51") RAMSIZE(256) 

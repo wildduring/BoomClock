@@ -40,7 +40,7 @@ extern unsigned char Alarm2Time[7];    //闹钟2的时间，格式与ds1302相同
 *                 函数声明                  *
 *******************************************/
 void InitBoomClock(void);			//初始化，主要初始化DS1302
-void Delay50us(void);					//延时100us，@11.0592MHz
+void Delay50us(void);					//延时50us，@11.0592MHz
 void DisplayTime(unsigned char* date, bit isFlash);				//不从DS1302读取，仅仅显示时间，isFlash==1时钟冒号闪烁，反之常亮
 void DisplayRealTime(void);		//从DS302读取时间并显示
 void ScanKeys(void);					//扫描按钮
@@ -50,6 +50,7 @@ void Timer0_Init(void);		//定时器初始化，100微秒@11.0592MHz
 void displayFlashAlarm(unsigned char select, unsigned char* date, bit isYear);    //显示闪烁的时间，select表示第几位闪烁，date表示时间来源，isYear为1时间位显示20xx年，如果21xx年作者仍然建在会更新程序到21xx年，具体更新几百年取决于作者生命力
 void tm0_isr();    //中断函数
 void AlarmBeep(void);    //闹钟响铃
+void Boom_Display(unsigned int i);    //彩蛋中显示数字
 
 //按钮事件
 void showYear(void);			//显示年份
@@ -60,5 +61,13 @@ void setAlarm1(void);			//设置闹钟1
 void setAlarm2(void);			//设置闹钟2
 void setBrightness(void);	//设置亮度
 void Boom(void);					//小彩蛋
+
+/*******************************************
+*                 歌曲声明                  *
+*******************************************/
+void music_delay(unsigned char p);
+void music_pause();
+void music_display();
+void PlayMusic(void);    //播放音乐
 
 #endif

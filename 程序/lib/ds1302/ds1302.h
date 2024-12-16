@@ -1,6 +1,8 @@
 #ifndef _ds1302_h_
 #define _ds1302_h_
 
+//#define _ds1302_h_DEBUG_
+
 #include <reg51.h>
 #include<intrins.h>
 
@@ -9,16 +11,18 @@ unsigned char code WRITE_RTC_ADDR[8] = {0x80, 0x82, 0x84, 0x86, 0x88, 0x8a, 0x8c
 
 extern unsigned char TIME[] = {0, 0, 0x20, 0x20, 0x01, 0x05, 0x23};    //00秒 00分 20时 01日 20月 周五 23年
 
-/*
+#ifdef _ds1302_h_DEBUG_
+//Debug
 sbit ds1302_io = P3^4;
 sbit ds1302_ce = P3^5;
 sbit ds1302_sclk = P3^6;
-*/
+#endif
 
+#ifndef _ds1302_h_DEBUG_
 sbit ds1302_io = P3^5;
 sbit ds1302_ce = P3^6;
 sbit ds1302_sclk = P3^4;
-
+#endif
 
 void ds1302Write(unsigned char addr, unsigned char dat)
 {

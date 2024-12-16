@@ -14,11 +14,24 @@ unsigned char flashCount = 0;
 bit flashFlag = 1;
 bit enAlarm1 = 0;
 bit enAlarm2 = 0;
-unsigned char Alarm1Time[7] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-unsigned char Alarm2Time[7] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char Alarm1Time[7] = {0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00};
+unsigned char Alarm2Time[7] = {0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00};
+
+unsigned char m,n;
+unsigned char code T[49][2]={{0,0},
+{0xF8,0x8B},{0xF8,0xF2},{0xF9,0x5B},{0xF9,0xB7},{0xFA,0x14},{0xFA,0x66},{0xFA,0xB9},{0xFB,0x03},{0xFB,0x4A},{0xFB,0x8F},{0xFB,0xCF},{0xFC,0x0B},
+{0xFC,0x43},{0xFC,0x78},{0xFC,0xAB},{0xFC,0xDB},{0xFD,0x08},{0xFD,0x33},{0xFD,0x5B},{0xFD,0x81},{0xFD,0xA5},{0xFD,0xC7},{0xFD,0xE7},{0xFE,0x05},
+{0xFE,0x21},{0xFE,0x3C},{0xFE,0x55},{0xFE,0x6D},{0xFE,0x84},{0xFE,0x99},{0xFE,0xAD},{0xFE,0xC0},{0xFE,0x02},{0xFE,0xE3},{0xFE,0xF3},{0xFF,0x02},
+{0xFF,0x10},{0xFF,0x1D},{0xFF,0x2A},{0xFF,0x36},{0xFF,0x42},{0xFF,0x4C},{0xFF,0x56},{0xFF,0x60},{0xFF,0x69},{0xFF,0x71},{0xFF,0x79},{0xFF,0x81}
+};
+unsigned char code music[][2]={{0,4},
+{17,8},{17,8},{17,8},{13,8},{17,4},{18,8},{17,12},{18,4},{17,4},{15,4},{15,12},{22,8},{15,4},{15,12},{0,8},{0,8},{0,8},{20,8},{20,8},{20,8},{15,8},{20,4},{22,4},{20,4},{20,8},{20,4},{22,4},{20,4},{18,4},{18,8},{18,4},{20,4},{18,8},{17,12},{0,8},{0,8},{0,8},{17,8},{17,8},{17,8},{13,8},{17,4},{18,8},{17,8},{17,4},{18,4},{17,4},{15,4},{15,8},{15,4},{22,8},{15,4},{15,12},{0,8},{0,8},{0,8},{20,8},{20,8},{20,8},{15,8},{20,4},{22,4},{20,4},{20,8},{20,4},{22,4},{24,4},{25,4},{25,12},{24,4},{24,8},{25,20},
+{0xFF,0xFF}};
 
 void InitBoomClock(void)
 {
+	unsigned int i;
+	for(i=1024; i>0; i--);    //等待ds1302先上电
 	ds1302Init();
 	Timer0_Init();
 }
@@ -257,32 +270,58 @@ void setBrightness(void)	//设置亮度
 	}
 }
 
+void Boom_Display(unsigned int i)    //彩蛋中显示数字
+{
+	unsigned char l, delay = 5;
+	display(1, i/1000);
+	for(l=delay; l>0; l--);
+	display(2, i/100%10);
+	for(l=delay; l>0; l--);
+	display(3, i/10%10);
+	for(l=delay; l>0; l--);
+	display(4, i%10);
+	for(l=delay; l>0; l--);
+	display(9, 0);
+}
+
 void Boom(void)					//小彩蛋
 {
-	unsigned char i, j, k, l;
-	for(i=9; i>0; i--)
+	unsigned int i, j, k;
+	for(i=10; i>0; i--)
 	{
-		display(4, i);
-		for(j=0; j<2; j++)
+		if(i<10)
 		{
-			for(k=0; k<50; k++)
+			for(j=50; j>0; j--)
 			{
-				Beep = ! Beep;
-				for(l=0; l<50; l++) 
-				{
-					Delay50us();
-				}
-			}
-			for(k=0; k<100; k++)
-			{
-				Delay50us();
+				Beep = !Beep;
+				Boom_Display(i);
 			}
 		}
-		for(j=0; j<200; j++)
+		for(j=1024; j>0; j--)    //延时
 		{
-			for(k=0; k<50; k++)Delay50us();
+			Boom_Display(i);
+			if(BoomKey == 0)    //如果Boom按钮按下时间增加10单位
+			{
+				for(k=20; k>0; k--)    //消抖
+				{
+					Boom_Display(i);
+				}
+				while(BoomKey == 0) Boom_Display(i);
+				i += 10;
+				if(i>9999) i=9999;
+			}
+			if((Alarm1Key & Alarm2Key & SetKey & UpKey &	DownKey) == 0)    //如果其他按键按下退出
+			{
+				for(k=20; k>0; k--)    //消抖
+				{
+					Boom_Display(i);
+				}
+				while((Alarm1Key & Alarm2Key & SetKey & UpKey &	DownKey) == 0) Boom_Display(i);
+				return;
+			}
 		}
 	}
+	PlayMusic();
 }
 
 void displayFlashAlarm(unsigned char select, unsigned char* date, bit isYear)    //用这个函数前记得把定时器打开，用完再关上
@@ -529,6 +568,12 @@ void tm0_isr() interrupt 1 using 1
 	}
 }
 
+void tm1_isr() interrupt 3 using 1
+{
+	Beep=!Beep;
+	TH1=T[m][0]; TL1=T[m][1];
+}
+
 void AlarmSync(void)
 {
 	AlarmLED1 = enAlarm1;
@@ -577,6 +622,7 @@ void AlarmBeep(void)    //闹钟响铃
 			if(!flag) break;
 		}
 	}
+	Beep = 1;
 	for(i=0; i<10; i++) Delay50us();
 }
 
@@ -764,6 +810,76 @@ void setTime(void)
 	}
 	TIME[0] = 0x00;
 	ds1302WriteTime();
+}
+
+void music_delay(unsigned char p)
+{
+	unsigned char i,j; 
+	for(;p>0;p--)
+	for(i=151;i>0;i--)
+	for(j=21;j>0;j--)
+	{
+		music_display();
+	}
+}
+
+void music_pause()
+{
+	unsigned char i,j;
+	for(i=120;i>0;i--)
+	for(j=1;j>0;j--)
+	{
+		music_display();
+	}
+}
+
+void music_display()
+{
+	P0 = 0x00;
+	P2 = 0xFE;
+	P0 = 0x7C;
+	
+	P0 = 0x00;
+	P2 = 0xF1;
+	P0 = 0x5C;
+	
+	P0 = 0x00;
+}
+
+void PlayMusic()
+{
+	unsigned char i=0; 
+	TMOD&=0x0F;  TMOD|=0x10;  EA=1; ET1=1;
+	while(1)
+	{
+		m=music[i][0];n=music[i][1]/2;
+		if(m==0x00)
+		{
+			TR1=0;
+			music_delay(n);
+			i++;
+		}
+		else if(m==0xFF)
+		{
+			TR1=0;
+			Beep=1;
+			return;
+		}
+		else if(m==music[i+1][0])
+		{
+			TR1=1;
+			music_delay(n);
+			TR1=0;
+			music_pause();
+			i++;
+		}
+		else
+		{
+			TR1=1;
+			music_delay(n);
+			i++;
+		}
+	}
 }
 
 #endif
